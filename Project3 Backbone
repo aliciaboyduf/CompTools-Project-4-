@@ -79,3 +79,44 @@ for key, value in Airport_dict.items():
     insert_airport(key, value[0], value[1])            
 metadata.create_all(engine)
 
+#Fix Errors and insert into the Accuracy Table
+
+import datetime
+import pandas as pd
+
+def to_date(dates, lookup=False, **args):
+    if lookup:
+        return dates.map({v: pd.to_datetime(v, **args) for v in dates.unique()})
+    return pd.to_datetime(dates, **args)
+# Close the file
+Accuracy.close()
+
+# Re-open to get flight data
+
+Accuracy=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
+
+
+reader = csv.DictReader(Accuracy)
+for Line in reader:
+
+    ins=Accuracy.insert().values(Fl_date=to_date(Line['FL_DATE']),
+                                Airline_ID = Line['AIRLINE_ID'],
+                                Origin = Line['ORIGIN'],
+                                Destination = Line['DEST'],
+                                Dep_Time = Line['DEP_TIME'],
+                                Dep_Delay_New = Line['DEP_DELAY_NEW'],
+                                Arr_Time = Line['ARR_TIME'],
+                                Arr_Delay_New = Line['ARR_DELAY_NEW'],
+                                Cancelled = int(float((Line['CANCELLED']))),
+                                Cancellation_Code = Line['CANCELLATION_CODE'],
+                                Diverted = int(float((Line['DIVERTED']))),
+                                Air_Time = Line['AIR_TIME'],
+                                Flights = Line['FLIGHTS'],
+                                Distance = Line['DISTANCE'],
+                                Carrier_Delay = Line['CARRIER_DELAY'],
+                                Weather_Delay = Line['WEATHER_DELAY'],
+                                Late_Aircraft_Delay = Line['LATE_AIRCRAFT_DELAY']
+                                          )
+                                          
+
+    result = conn.execute(ins)
