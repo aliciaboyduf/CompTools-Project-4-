@@ -1,0 +1,4 @@
+query=select([Airport.c.origin, Aiport.c.Destination, Accuracy.c.Arr_Delay_New]).where(Accuracy.c.Distance > 2000)
+result = conn.execute(query)
+for row in result:
+    print(row)
