@@ -1,0 +1,81 @@
+#Create Dictionary
+
+import csv
+flights=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
+
+
+reader = csv.DictReader(flights)
+
+Airport_dict={}
+
+# Read through the file and make a dictionary for airport codes.
+# This gets a unique list of airport codes.
+for Line in reader:
+    if Line['ORIGIN'] not in Airport_dict:
+        Airport_dict[Line['ORIGIN']]=[Line['ORIGIN_CITY_NAME'], Line['ORIGIN_STATE_ABR']]
+
+    if Line['DEST'] not in Airport_dict:
+        Airport_dict[Line['DEST']]=[Line['DEST_CITY_NAME'], Line['DEST_STATE_ABR']]
+        
+        from sqlalchemy import create_engine
+
+#Create Database 
+
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import DateTime, Boolean
+from sqlalchemy import exists
+from sqlalchemy import sql, select, join, desc
+
+# Create a sqlite database 
+engine = create_engine('sqlite:///zoo6927/flights.sqlite') #/file location - add pathway, if necessary. It starts in your homedirectory
+
+metadata=MetaData(engine)
+
+# Try to load Airports info from database, if not there, create it.
+try:
+    Airports=Table('Airports', metadata, autoload=True)
+except:
+    Airports = Table ('Airports', metadata,
+                Column('ID', Integer, autoincrement=True),
+                Column('Code', String, primary_key=True),
+                Column('City', String),
+                Column('State', String),
+                Column('Name', String),
+               )
+
+# Same for Accuracy table.
+try:
+    Accuracy=Table('Accuracy', metadata, autoload=True)
+except:
+    Flights = Table ('Accuracy', metadata,
+                 Column('Fl_date', DateTime),
+                 Column('Airline_ID', String),
+                 Column('Origin', String, ForeignKey("Airports.Code")),
+                 Column('Destination', String, ForeignKey("Airports.Code")),
+                 Column('Dep_Time', String),
+                 Column('Dep_Delay_New', Integer),
+                 Column('Arr_Time', String),
+                 Column('Arr_Delay_New', Integer),
+                 Column('Cancelled', Boolean),
+                 Column('Cancellation_Code', String),
+                 Column('Diverted', Boolean),
+                 Column('Air_Time', String),
+                 Column('Flights', Integer),
+                 Column('Distance', Integer),
+                 Column('Carrier_Delay', Integer),
+                 Column('Weather_Delay', Integer),
+                 Column('Late_Aircraft_Delay', Integer)
+                )
+                
+# Add the Airport_dict codes to the Airports table
+
+def insert_airport(code,city,state):
+    ins=Airports.insert().values(Code=code,
+                                 City=city,
+                                 State=state)
+    result = conn.execute(ins)
+
+for key, value in Airport_dict.items(): 
+    insert_airport(key, value[0], value[1])            
+metadata.create_all(engine)
+
