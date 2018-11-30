@@ -70,6 +70,8 @@ except:
                 
 # Add the Airport_dict codes to the Airports table
 
+conn = engine.connect()
+
 def insert_airport(code,city,state):
     ins=Airports.insert().values(Code=code,
                                  City=city,
