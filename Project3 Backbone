@@ -1,10 +1,12 @@
+#This script requires that you have the python3 module
+
+#!/bin/evn python
+
 #Create Dictionary
 
 import csv
 
 flights=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
-
-
 reader = csv.DictReader(flights)
 
 Airport_dict={}
