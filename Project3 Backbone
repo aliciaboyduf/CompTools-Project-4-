@@ -1,10 +1,6 @@
 #Create Dictionary
 
 import csv
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-from sqlalchemy import DateTime, Boolean
-from sqlalchemy import exists
-from sqlalchemy import sql, select, join, desc
 
 flights=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
 
@@ -25,6 +21,11 @@ for Line in reader:
         from sqlalchemy import create_engine
 
 #Create Database 
+
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import DateTime, Boolean
+from sqlalchemy import exists
+from sqlalchemy import sql, select, join, desc
  
 engine = create_engine('sqlite:///zoo6927/flights.sqlite') #/file location - add pathway, if necessary. It starts in your homedirectory
 
