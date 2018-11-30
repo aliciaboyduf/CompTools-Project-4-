@@ -47,7 +47,7 @@ except:
 try:
     Accuracy=Table('Accuracy', metadata, autoload=True)
 except:
-    Flights = Table ('Accuracy', metadata,
+    Accuracy = Table ('Accuracy', metadata,
                  Column('Airline_ID', String),
                  Column('Origin', String, ForeignKey("Airports.Code")),
                  Column('Destination', String, ForeignKey("Airports.Code")),
