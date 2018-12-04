@@ -81,7 +81,6 @@ def insert_airport(code,city,state):
 
 for key, value in Airport_dict.items(): 
     insert_airport(key, value[0], value[1])            
-metadata.create_all(engine)
 
 #Close file, before moving onto the next table
 Accuracy.close()
