@@ -67,6 +67,8 @@ except:
                  Column('Late_Aircraft_Delay', Integer)
                 )
                 
+metadata.create_all(engine)
+
 # Add the Airport_dict codes to the Airports table
 
 conn = engine.connect()
