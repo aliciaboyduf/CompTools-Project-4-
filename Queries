@@ -1,4 +1,7 @@
-query=select([Airport.c.origin, Aiport.c.Destination, Accuracy.c.Arr_Delay_New]).where(Accuracy.c.Distance > 2000)
-result = conn.execute(query)
-for row in result:
-    print(row)
+import sqlite3
+
+conn = sqlite3.connect('flights.sqlite')
+cur = conn.cursor()
+cur.execute('SELECT Cancelled, Origin from Accuracy INNER JOIN Airports ON Origin = Code WHERE Cancelled = '1')
+
+conn.close()
