@@ -109,7 +109,7 @@ for Line in reader:
                                 Carrier_Delay = Line['CARRIER_DELAY'],
                                 Weather_Delay = Line['WEATHER_DELAY'],
                                 Late_Aircraft_Delay = Line['LATE_AIRCRAFT_DELAY']
-                                          )
+                                )
                                           
 
     result = conn.execute(ins)
