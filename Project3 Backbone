@@ -29,7 +29,7 @@ from sqlalchemy import exists
 from sqlalchemy import sql, select, join, desc
  
 engine = create_engine('sqlite:///zoo6927/flights.sqlite') #/file location - add pathway, if necessary. It starts in your homedirectory
-
+conn = engine.connect()
 metadata=MetaData(engine)
 
 # Try to load Airports info from database, if not there, create it.
