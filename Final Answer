@@ -109,7 +109,15 @@ for Line in reader:
                                 Carrier_Delay = Line['CARRIER_DELAY'],
                                 Weather_Delay = Line['WEATHER_DELAY'],
                                 Late_Aircraft_Delay = Line['LATE_AIRCRAFT_DELAY']
-                                          )
+                                )
                                           
 
-    result = conn.execute(ins)
+result = conn.execute(ins)
+
+import sqlite3
+
+conn = sqlite3.connect('flights.sqlite')
+cur = conn.cursor()
+cur.execute('SELECT Cancelled, Origin from Accuracy INNER JOIN Airports ON Origin = Code WHERE Cancelled = '1')
+
+conn.close()
