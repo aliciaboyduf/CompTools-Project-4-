@@ -1,0 +1,114 @@
+#IMPORTANT. This code uses paths to the flights data from Justin's local computer. PLease update the paths if you try to run this code.
+#Create Dictionary
+
+import csv
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import DateTime, Boolean
+from sqlalchemy import exists
+from sqlalchemy import sql, select, join, desc
+
+flights=open("/Users/Justin/Downloads/data/flights.1K.csv")
+
+
+reader = csv.DictReader(flights)
+
+Airport_dict={}
+
+# Read through the file and make a dictionary for airport codes.
+# This gets a unique list of airport codes.
+for Line in reader:
+    if Line['ORIGIN'] not in Airport_dict:
+        Airport_dict[Line['ORIGIN']]=[Line['ORIGIN_CITY_NAME'], Line['ORIGIN_STATE_ABR']]
+
+    if Line['DEST'] not in Airport_dict:
+        Airport_dict[Line['DEST']]=[Line['DEST_CITY_NAME'], Line['DEST_STATE_ABR']]
+        
+        from sqlalchemy import create_engine
+
+#Create Database 
+ 
+engine = create_engine('sqlite:///flights.sqlite') #/file location - add pathway, if necessary. It starts in your homedirectory
+
+conn = engine.connect()
+
+metadata=MetaData(engine)
+
+conn.execute('DROP TABLE IF EXISTS Airports')
+conn.execute('DROP TABLE IF EXISTS Accuracy')
+# Try to load Airports info from database, if not there, create it.
+try:
+    Airports=Table('Airports', metadata, autoload=True)
+except:
+    Airports = Table ('Airports', metadata,
+                Column('ID', Integer, autoincrement=True),
+                Column('Code', String, primary_key=True),
+                Column('City', String),
+                Column('State', String),
+                )
+
+# Same for Accuracy table.
+try:
+    Accuracy=Table('Accuracy', metadata, autoload=True)
+except:
+    Accuracy = Table ('Accuracy', metadata,
+                 Column('Accuracy_Code', Integer, autoincrement=True, primary_key=True),
+                 Column('Origin', String, ForeignKey("Airports.Code")),
+                 Column('Destination', String),
+                 Column('Dep_Time', String),
+                 Column('Dep_Delay_New', Integer),
+                 Column('Arr_Time', String),
+                 Column('Arr_Delay_New', Integer),
+                 Column('Cancelled', Boolean),
+                 Column('Cancellation_Code', String),
+                 Column('Diverted', Boolean),
+                 Column('Air_Time', String),
+                 Column('Flights', Integer),
+                 Column('Distance', Integer),
+                 Column('Carrier_Delay', Integer),
+                 Column('Weather_Delay', Integer),
+                 Column('Late_Aircraft_Delay', Integer)
+                )
+
+metadata.create_all(engine)
+
+# Add the Airport_dict codes to the Airports table
+
+def insert_airport(code,city,state):
+    ins=Airports.insert().values(Code=code,
+                                 City=city,
+                                 State=state
+                                 )
+    result = conn.execute(ins)
+
+for key, value in Airport_dict.items(): 
+    insert_airport(key, value[0], value[1])            
+
+flights.close()
+    
+# Re-open to get flight data
+
+flights=open("/Users/Justin/Downloads/data/flights.1K.csv")
+
+
+reader = csv.DictReader(flights)
+for Line in reader:
+
+    ins=Accuracy.insert().values(Origin = Line['ORIGIN'],
+                                Destination = Line['DEST'],
+                                Dep_Time = Line['DEP_TIME'],
+                                Dep_Delay_New = Line['DEP_DELAY_NEW'],
+                                Arr_Time = Line['ARR_TIME'],
+                                Arr_Delay_New = Line['ARR_DELAY_NEW'],
+                                Cancelled = int(float((Line['CANCELLED']))),
+                                Cancellation_Code = Line['CANCELLATION_CODE'],
+                                Diverted = int(float((Line['DIVERTED']))),
+                                Air_Time = Line['AIR_TIME'],
+                                Flights = Line['FLIGHTS'],
+                                Distance = Line['DISTANCE'],
+                                Carrier_Delay = Line['CARRIER_DELAY'],
+                                Weather_Delay = Line['WEATHER_DELAY'],
+                                Late_Aircraft_Delay = Line['LATE_AIRCRAFT_DELAY']
+                                          )
+                                          
+
+    result = conn.execute(ins)
