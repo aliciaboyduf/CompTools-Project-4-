@@ -6,6 +6,7 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import DateTime, Boolean
 from sqlalchemy import exists
 from sqlalchemy import sql, select, join, desc
+from sqlalchemy import create_engine
 
 flights=open("/Users/Justin/Downloads/data/flights.1K.csv")
 
@@ -23,7 +24,6 @@ for Line in reader:
     if Line['DEST'] not in Airport_dict:
         Airport_dict[Line['DEST']]=[Line['DEST_CITY_NAME'], Line['DEST_STATE_ABR']]
         
-        from sqlalchemy import create_engine
 
 #Create Database 
  
