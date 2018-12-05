@@ -6,7 +6,7 @@
 
 import csv
 
-flights=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
+flights=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv") #path to where the file is saved
 reader = csv.DictReader(flights)
 
 Airport_dict={}
