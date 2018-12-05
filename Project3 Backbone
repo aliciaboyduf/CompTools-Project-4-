@@ -83,14 +83,14 @@ for key, value in Airport_dict.items():
     insert_airport(key, value[0], value[1])            
 
 #Close file, before moving onto the next table
-Accuracy.close()
+flights.close()
 
 # Re-open to get flight data
 
-Accuracy=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
+flights=open("/ufrc/zoo6927/share/Class_Files/data/flights.1K.csv")
 
 
-reader = csv.DictReader(Accuracy)
+reader = csv.DictReader(flights)
 for Line in reader:
 
     ins=Accuracy.insert().values(Airline_ID = Line['AIRLINE_ID'],
