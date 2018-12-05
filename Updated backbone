@@ -30,8 +30,9 @@ conn = engine.connect()
 
 metadata=MetaData(engine)
 
-conn.execute('DROP TABLE IF EXISTS Airports')
+conn.execute('DROP TABLE IF EXISTS Airports') #removes table so we can load airports info from database and create a specified table 
 conn.execute('DROP TABLE IF EXISTS Accuracy')
+
 # Try to load Airports info from database, if not there, create it.
 try:
     Airports=Table('Airports', metadata, autoload=True)
